@@ -1,8 +1,8 @@
 {
-  "name": "react-scripts",
-  "version": "1.1.5",
-  "description": "Configuration and scripts for Create React App.",
-  "repository": "facebookincubator/create-react-app",
+  "name": "nexum-react-scripts",
+  "version": "1.1.0",
+  "description": "nexum configuration and scripts for Create React App.",
+  "repository": "nexumAG/create-react-app",
   "license": "MIT",
   "engines": {
     "node": ">=6"

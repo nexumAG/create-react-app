@@ -1,0 +1,73 @@
+{
+  "scripts": {
+    "start": "cross-env NODE_PATH=src/ react-scripts start",
+    "build": "cross-env NODE_PATH=src/ react-scripts build",
+    "test": "react-scripts test --env=jsdom --modulePaths=src --setupFiles=./jestsetup.js",
+    "eject": "react-scripts eject",
+    "coverage": "react-scripts test --coverage --env=jsdom --modulePaths=src --setupFiles=./jestsetup.js",
+    "test:ci": "react-scripts test --ci --coverage --coverageDirectory ./.reports/coverage --reporters jest-junit --env=jsdom --modulePaths=src --setupFiles=./jestsetup.js",
+    "lint": "eslint src/**/*.js && stylelint src/**/*.js",
+    "lint:fix": "eslint --fix src/**/*.js",
+    "lint:ci": "eslint src/**/*.js -f ./node_modules/eslint-junit/index.js",
+    "stylelint:ci": "stylelint src/**/*.js --custom-formatter=node_modules/stylelint-junit-formatter > ./.reports/stylelint.xml",
+    "flow": "flow check",
+    "flow:ci": "flow check --json | flow-junit-transformer > ./.reports/flow.xml",
+    "atomic": "atomic-scripts"
+  },
+  "dependencies": {
+    "styled-components": "^3.4.1"
+  },
+  "devDependencies": {
+    "@kironeducation/flow-junit-transformer": "^0.3.0",
+    "atomic-scripts": "^2.1.2",
+    "cross-env": "^5.2.0",
+    "enzyme": "^3.4.2",
+    "enzyme-adapter-react-16": "^1.2.0",
+    "enzyme-to-json": "^3.3.4",
+    "eslint": "4.19.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-junit": "^1.0.1",
+    "eslint-plugin-flowtype": "^2.50.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-react": "^7.10.0",
+    "flow-bin": "^0.79.1",
+    "jest-junit": "^5.1.0",
+    "jest-styled-components": "^5.0.1",
+    "raf": "^3.4.0",
+    "react-test-renderer": "^16.4.2",
+    "stylelint": "^9.4.0",
+    "stylelint-config-recommended": "^2.1.0",
+    "stylelint-config-standard": "^18.2.0",
+    "stylelint-config-styled-components": "^0.1.1",
+    "stylelint-junit-formatter": "^0.2.1",
+    "stylelint-processor-styled-components": "^1.3.2"
+  },
+  "jest": {
+    "coverageReporters": [
+      "clover",
+      "lcov",
+      "text"
+    ],
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ]
+  },
+  "jest-junit": {
+    "output": "./.reports/jest.xml",
+    "ancestorSeparator": " > ",
+    "usePathForSuiteName": "true"
+  },
+  "eslint-junit": {
+    "output": "./.reports/eslint.xml"
+  },
+  "atomic-scripts": {
+    "componentsDir": "src/components/",
+    "componentTypes": [
+      "atom",
+      "molecule",
+      "organism",
+      "slice"
+    ]
+  }
+}

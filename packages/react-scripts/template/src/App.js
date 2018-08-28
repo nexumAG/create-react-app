@@ -1,21 +1,31 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+// @flow
+import React from 'react';
+import styled from 'styled-components';
+import logo from 'assets/img/nexum_logo.png';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
+const AppStyled = styled.div`
+  padding: 200px;
+  text-align: center;
+  perspective: 300px;
+  overflow: hidden;
+
+  @keyframes rotate {
+    from {transform: rotateY(0deg);}
+    to {transform: rotateY(360deg);}
   }
-}
+
+  & div {
+    animation-name: rotate;
+    animation-duration: 6s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+  }
+`;
+
+const App = () => (
+  <AppStyled>
+    <div><img src={logo} alt="" /></div>
+  </AppStyled>
+);
 
 export default App;

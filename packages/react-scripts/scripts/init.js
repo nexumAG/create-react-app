@@ -32,8 +32,25 @@ module.exports = function(
   const appPackage = require(path.join(appPath, 'package.json'));
   const useYarn = fs.existsSync(path.join(appPath, 'yarn.lock'));
 
+  // nexum: require .template.package.json
+  const templatePackageJsonPath = path.join(
+    __dirname,
+    '..',
+    'template',
+    '.template.package.json'
+  );
+  let packageJson = null;
+  if (fs.existsSync(templatePackageJsonPath)) {
+    packageJson = require(templatePackageJsonPath);
+  }
+
   // Copy over some of the devDependencies
   appPackage.dependencies = appPackage.dependencies || {};
+
+  // nexum: add dependencies from .template.package.json
+  if (packageJson) {
+    Object.assign(appPackage.dependencies, packageJson.dependencies, packageJson.devDependencies);
+  }
 
   // Setup the script rules
   appPackage.scripts = {
@@ -42,6 +59,21 @@ module.exports = function(
     test: 'react-scripts test --env=jsdom',
     eject: 'react-scripts eject',
   };
+
+  // nexum: overwrite/add scripts from .template.package.json
+  if (packageJson) {
+    // scripts
+    const templateScripts = packageJson.scripts;
+    Object.assign(appPackage.scripts, templateScripts);
+  }
+
+  // nexum: more package.json features
+  if (packageJson) {
+    appPackage['jest'] = packageJson['jest'];
+    appPackage['jest-junit'] = packageJson['jest-junit'];
+    appPackage['eslint-junit'] = packageJson['eslint-junit'];
+    appPackage['atomic-scripts'] = packageJson['atomic-scripts'];
+  }
 
   fs.writeFileSync(
     path.join(appPath, 'package.json'),
@@ -101,19 +133,25 @@ module.exports = function(
   }
   args.push('react', 'react-dom');
 
-  // Install additional template dependencies, if present
-  const templateDependenciesPath = path.join(
-    appPath,
-    '.template.dependencies.json'
-  );
-  if (fs.existsSync(templateDependenciesPath)) {
-    const templateDependencies = require(templateDependenciesPath).dependencies;
+  // nexum: Install additional template dependencies, if present
+  if (packageJson) {
+    // dependencies
+    const templateDependencies = packageJson.dependencies;
     args = args.concat(
       Object.keys(templateDependencies).map(key => {
         return `${key}@${templateDependencies[key]}`;
       })
     );
-    fs.unlinkSync(templateDependenciesPath);
+
+    // devDependencies (for now install as normal dependency)
+    const templateDevDependencies = packageJson.devDependencies;
+    args = args.concat(
+      Object.keys(templateDevDependencies).map(key => {
+        return `${key}@${templateDevDependencies[key]}`;
+      })
+    );
+
+    fs.unlinkSync(path.join(appPath, '.template.package.json'));
   }
 
   // Install react and react-dom for backward compatibility with old CRA cli
@@ -166,12 +204,57 @@ module.exports = function(
   );
   console.log(
     '    and scripts into the app directory. If you do this, you can’t go back!'
+  );  
+  console.log();
+  console.log(
+    chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}coverage`)
   );
+  console.log(
+    chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}test:ci`)
+  );
+  console.log(
+    chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}lint`)
+  );
+  console.log(
+    chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}lint:fix`)
+  );
+  console.log(
+    chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}lint:ci`)
+  );
+  console.log(
+    chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}stylelint:ci`)
+  );
+  console.log(
+    chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}flow`)
+  );
+  console.log(
+    chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}flow:ci`)
+  );
+  console.log(
+    chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}atomic`)
+  );
+  console.log(
+    '    These scripts are added by nexum-react-scripts.'
+  );
+  console.log();
+  console.log(`
+  _ __   _____  ___   _ _ __ ___
+ | '_ \ / _ \ \/ / | | | '_ ´  _ \
+ | | | |  __/>  <| |_| | | | | | |
+ |_| |_|\___/_/\_\\__,_|_| |_| |_|
+  `);
+  console.log();
+  console.log('More info: https://github.com/nexumAG/create-react-app');
   console.log();
   console.log('We suggest that you begin by typing:');
   console.log();
   console.log(chalk.cyan('  cd'), cdpath);
+  console.log('First install dependencies:');
+  console.log(`  ${chalk.cyan(`${displayedCommand} install`)}`);
+  console.log();
+  console.log('Start dev server:');
   console.log(`  ${chalk.cyan(`${displayedCommand} start`)}`);
+  console.log();
   if (readmeExists) {
     console.log();
     console.log(
