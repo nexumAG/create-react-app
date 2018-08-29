@@ -239,16 +239,16 @@ module.exports = function(
   console.log();
   console.log(`
   _ __   _____  ___   _ _ __ ___
- | '_ \ / _ \ \/ / | | | '_ ´  _ \
+ | '_ \\ / _ \\ \\/ / | | | '_ ´ _ \\
  | | | |  __/>  <| |_| | | | | | |
- |_| |_|\___/_/\_\\__,_|_| |_| |_|
+ |_| |_|\\___/_/\\_\\\\__,_|_| |_| |_|
   `);
   console.log();
   console.log('More info: https://github.com/nexumAG/create-react-app');
   console.log();
   console.log('We suggest that you begin by typing:');
-  console.log();
   console.log(chalk.cyan('  cd'), cdpath);
+  console.log();
   console.log('First install dependencies:');
   console.log(`  ${chalk.cyan(`${displayedCommand} install`)}`);
   console.log();
